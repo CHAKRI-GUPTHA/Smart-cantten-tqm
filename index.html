@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071b3b">
+  <meta name="description" content="Smart Canteen Quality Monitoring System — a TQM dashboard for food safety, student feedback, and continuous improvement.">
+  <title>Smart Canteen | Quality Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="app-shell" id="adminApp">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#dashboard" aria-label="Smart Canteen home">
+        <span class="brand-mark"><i data-lucide="utensils"></i></span>
+        <span><strong>Smart Canteen</strong><small>QUALITY MONITORING</small></span>
+      </a>
+      <div class="nav-caption">WORKSPACE</div>
+      <nav class="main-nav" aria-label="Manager navigation">
+        <button class="nav-link active" data-view="dashboard"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></button>
+        <button class="nav-link" data-view="food-quality"><i data-lucide="utensils-crossed"></i><span>Food Quality</span></button>
+        <button class="nav-link" data-view="hygiene"><i data-lucide="clipboard-check"></i><span>Hygiene Checklist</span></button>
+        <button class="nav-link" data-view="feedback"><i data-lucide="message-square-heart"></i><span>Student Feedback</span><span class="nav-count" id="feedbackNavCount">24</span></button>
+        <button class="nav-link" data-view="complaints"><i data-lucide="triangle-alert"></i><span>Complaints</span><span class="nav-count alert-count" id="complaintNavCount">8</span></button>
+        <button class="nav-link" data-view="analysis"><i data-lucide="chart-no-axes-combined"></i><span>TQM Analysis</span></button>
+        <button class="nav-link" data-view="improvements"><i data-lucide="lightbulb"></i><span>Improvement Plan</span></button>
+        <button class="nav-link" data-view="staff"><i data-lucide="users-round"></i><span>Staff & Tasks</span></button>
+        <button class="nav-link" data-view="reports"><i data-lucide="file-chart-column"></i><span>Reports</span></button>
+      </nav>
+      <div class="nav-caption nav-caption-bottom">PREFERENCES</div>
+      <nav class="main-nav" aria-label="Settings">
+        <button class="nav-link" data-view="settings"><i data-lucide="settings-2"></i><span>Settings</span></button>
+        <button class="nav-link" data-action="logout"><i data-lucide="log-out"></i><span>Logout</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="demo-note"><span class="demo-dot"></span><span><strong>Demo mode</strong><small>Sample records are shown</small></span></div>
+        <button class="profile-mini" type="button" aria-label="Signed-in profile">
+          <span class="avatar avatar-manager">AM</span>
+          <span><strong>Alex Morgan</strong><small>Canteen Manager</small></span>
+          <i data-lucide="chevrons-up-down"></i>
+        </button>
+        <button class="sidebar-collapse" id="sidebarCollapse" type="button"><i data-lucide="panel-left-close"></i><span>Collapse sidebar</span></button>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button class="icon-button mobile-menu" id="menuToggle" aria-label="Open navigation"><i data-lucide="menu"></i></button>
+        <div class="crumb"><span>Workspace</span><i data-lucide="chevron-right"></i><strong id="breadcrumbTitle">Dashboard</strong></div>
+        <label class="search-box"><i data-lucide="search"></i><input id="globalSearch" type="search" placeholder="Search food, complaints, reports..." aria-label="Search dashboard"><kbd>⌘ K</kbd></label>
+        <button class="icon-button topbar-action" id="quickDate" aria-label="Choose date"><i data-lucide="calendar-days"></i></button>
+        <button class="icon-button notification-button" aria-label="Notifications"><i data-lucide="bell"></i><span></span></button>
+        <button class="profile-top" type="button"><span class="avatar avatar-manager">AM</span><span>Alex Morgan</span><i data-lucide="chevron-down"></i></button>
+        <button class="student-switch" id="openStudent"><i data-lucide="smartphone"></i><span>Student app</span></button>
+      </header>
+
+      <div class="page-wrap">
+        <section class="view-panel active" id="view-dashboard">
+          <div class="page-heading">
+            <div><div class="eyebrow"><span class="live-dot"></span> CANTEEN OPERATIONS <span class="demo-pill">DEMO DATA</span></div>
+              <h1>Canteen Quality Dashboard</h1>
+              <p>Monitor food quality <b>·</b> Ensure hygiene <b>·</b> Improve student satisfaction</p></div>
+            <button class="button button-outline" id="dateRange"><i data-lucide="calendar-range"></i><span>Oct 14 – Oct 20, 2026</span><i data-lucide="chevron-down" class="button-chevron"></i></button>
+          </div>
+
+          <div class="metric-grid">
+            <article class="metric-card">
+              <div class="metric-top"><span>Food Quality Score</span><span class="metric-icon green"><i data-lucide="salad"></i></span></div>
+              <div class="metric-number"><strong id="foodScore">94</strong><span>%</span></div>
+              <div class="metric-foot"><span class="mini-bar"><i id="foodScoreBar" style="width:94%"></i></span><small>Latest inspection</small></div>
+            </article>
+            <article class="metric-card">
+              <div class="metric-top"><span>Hygiene Score</span><span class="metric-icon blue"><i data-lucide="shield-check"></i></span></div>
+              <div class="metric-number"><strong id="hygieneScore">94</strong><span>%</span></div>
+              <div class="metric-foot"><span class="mini-bar blue-bar"><i id="hygieneScoreBar" style="width:94%"></i></span><small>Latest checklist</small></div>
+            </article>
+            <article class="metric-card">
+              <div class="metric-top"><span>Average Service Time</span><span class="metric-icon violet"><i data-lucide="timer"></i></span></div>
+              <div class="metric-number"><strong id="averageServiceTime">—</strong><span>min</span></div>
+              <div class="metric-foot"><span class="metric-context">From <b id="serviceTimeCount">0</b> measured servings · target under 8 min</span></div>
+              <form id="serviceTimeForm" class="service-time-form">
+                <label>Record serving time (minutes)<input name="duration_minutes" type="number" min="0.1" max="240" step="0.1" required></label>
+                <label>Meal<select name="meal" required><option>Breakfast</option><option selected>Lunch</option><option>Snacks</option><option>Dinner</option></select></label>
+                <button class="button button-outline" type="submit">Save measurement</button>
+              </form>
+            </article>
+            <article class="metric-card">
+              <div class="metric-top"><span>Student Satisfaction</span><span class="metric-icon amber"><i data-lucide="star"></i></span></div>
+              <div class="metric-number"><strong id="satisfactionScore">4.3</strong><span>/ 5</span><em class="positive"><i data-lucide="trending-up"></i> 0.4</em></div>
+              <div class="metric-foot"><span class="stars-small">★★★★★</span><small>From <b id="feedbackTotal">320</b> feedbacks</small></div>
+            </article>
+            <article class="metric-card">
+              <div class="metric-top"><span>Open Complaints</span><span class="metric-icon red"><i data-lucide="message-circle-warning"></i></span></div>
+              <div class="metric-number"><strong id="openComplaints">8</strong><em class="negative"><i data-lucide="arrow-down"></i> 5</em></div>
+              <div class="metric-foot"><span class="metric-context">Total complaints: <b id="totalComplaints">42</b></span><span class="metric-link" data-go="complaints">View all <i data-lucide="arrow-up-right"></i></span></div>
+            </article>
+          </div>
+
+          <div class="charts-grid">
+            <article class="panel chart-panel trend-panel">
+              <div class="panel-heading"><div class="panel-title"><span class="panel-icon purple-icon"><i data-lucide="chart-no-axes-column-increasing"></i></span><div><h2>Daily Satisfaction Trend</h2><small>Student ratings over the past week</small></div></div><select class="select-compact" id="trendRange" aria-label="Satisfaction chart date range"><option>Last 7 Days</option><option>Last 30 Days</option></select></div>
+              <div class="chart-canvas"><canvas id="satisfactionChart" aria-label="Line chart of daily satisfaction"></canvas></div>
+            </article>
+            <article class="panel chart-panel pareto-panel">
+              <div class="panel-heading"><div class="panel-title"><span class="panel-icon coral-icon"><i data-lucide="chart-no-axes-combined"></i></span><div><h2>Top Complaint Categories</h2><small>Pareto analysis · where to focus first</small></div></div><button class="text-button" data-go="analysis">View analysis <i data-lucide="arrow-up-right"></i></button></div>
+              <div class="chart-canvas"><canvas id="paretoChart" aria-label="Pareto chart of complaint categories"></canvas></div>
+            </article>
+          </div>
+
+          <div class="quality-charts-grid">
+            <article class="panel quality-chart-panel"><div class="panel-heading"><div class="panel-title"><span class="panel-icon green-icon"><i data-lucide="salad"></i></span><div><h2>Food Quality Distribution</h2><small>Inspection checklist results</small></div></div></div><div class="chart-canvas"><canvas id="foodDistributionChart"></canvas></div></article>
+            <article class="panel quality-chart-panel"><div class="panel-heading"><div class="panel-title"><span class="panel-icon blue-icon"><i data-lucide="shield-check"></i></span><div><h2>Hygiene Performance</h2><small>Compliance checklist results</small></div></div></div><div class="chart-canvas"><canvas id="hygieneDistributionChart"></canvas></div></article>
+            <article class="panel quality-chart-panel"><div class="panel-heading"><div class="panel-title"><span class="panel-icon coral-icon"><i data-lucide="chart-pie"></i></span><div><h2>Complaint Status Overview</h2><small>Current resolution workflow</small></div></div></div><div class="chart-canvas"><canvas id="complaintStatusChart"></canvas></div></article>
+          </div>
+
+          <div class="lower-grid">
+            <article class="panel pdca-panel">
+              <div class="panel-heading"><div class="panel-title"><span class="panel-icon blue-icon"><i data-lucide="refresh-cw"></i></span><div><h2>PDCA · Continuous Improvement</h2><small>Current focus: reduce lunch wait times</small></div></div><button class="more-button" aria-label="More PDCA actions"><i data-lucide="more-horizontal"></i></button></div>
+              <div class="pdca-steps">
+                <div class="pdca-step step-plan"><span class="step-label">01 · PLAN</span><strong>Identify problem</strong><small>Target: queue under 8 min</small><span class="step-status"><i data-lucide="circle-check"></i> Complete</span></div><i class="step-arrow" data-lucide="arrow-right"></i>
+                <div class="pdca-step step-do"><span class="step-label">02 · DO</span><strong>Implement solution</strong><small>Added a serving station</small><span class="step-status"><i data-lucide="loader-circle"></i> In progress</span></div><i class="step-arrow" data-lucide="arrow-right"></i>
+                <div class="pdca-step step-check"><span class="step-label">03 · CHECK</span><strong>Analyze results</strong><small>Review weekly service data</small><span class="step-status"><i data-lucide="clock-3"></i> Upcoming</span></div><i class="step-arrow" data-lucide="arrow-right"></i>
+                <div class="pdca-step step-act"><span class="step-label">04 · ACT</span><strong>Standardize & improve</strong><small>Document what works</small><span class="step-status"><i data-lucide="clock-3"></i> Upcoming</span></div>
+              </div>
+              <div class="progress-row"><span>Overall progress</span><div class="progress-track"><i style="width:42%"></i></div><strong>42%</strong><button class="text-button" data-go="improvements">Open plan</button></div>
+            </article>
+            <article class="panel complaints-panel">
+              <div class="panel-heading"><div class="panel-title"><span class="panel-icon coral-icon"><i data-lucide="inbox"></i></span><div><h2>Recent Complaints</h2><small>Follow up on student concerns</small></div></div><button class="text-button" data-go="complaints">View all <i data-lucide="arrow-up-right"></i></button></div>
+              <div class="table-scroll"><table class="complaint-table"><thead><tr><th>Complaint</th><th>Issue</th><th>Priority</th><th>Status</th><th></th></tr></thead><tbody id="recentComplaintRows"></tbody></table></div>
+            </article>
+          </div>
+          <div class="bottom-widgets">
+            <article class="panel compact-panel">
+              <div class="panel-heading"><div class="panel-title"><span class="panel-icon green-icon"><i data-lucide="clipboard-check"></i></span><div><h2>Hygiene Inspection</h2><small>Latest saved checklist</small></div></div><span class="status-chip status-good" id="hygieneSummaryStatus">See latest</span></div>
+              <div class="checklist-preview"><span>Dining area cleanliness <b>Compliant</b></span><span>Tables & chairs <b>Compliant</b></span><span>Handwashing facilities <b>Needs attention</b></span></div><button class="text-button" data-go="hygiene">Open checklist <i data-lucide="arrow-right"></i></button>
+            </article>
+            <article class="panel compact-panel">
+              <div class="panel-heading"><div class="panel-title"><span class="panel-icon blue-icon"><i data-lucide="clipboard-list"></i></span><div><h2>Food Quality Inspection</h2><small>Latest saved review</small></div></div><span class="status-chip status-good" id="foodSummaryStatus">See latest</span></div>
+              <div class="inspection-preview"><span><i data-lucide="circle-check"></i> Freshness</span><span><i data-lucide="circle-check"></i> Taste</span><span><i data-lucide="circle-alert"></i> Presentation</span><span><i data-lucide="circle-check"></i> Temperature</span></div><button class="text-button" data-go="food-quality">View inspection <i data-lucide="arrow-right"></i></button>
+            </article>
+            <article class="panel compact-panel satisfaction-summary">
+              <div class="panel-heading"><div class="panel-title"><span class="panel-icon amber"><i data-lucide="heart-handshake"></i></span><div><h2>Student Voice</h2><small>Latest feedback snapshot</small></div></div></div>
+              <div class="rating-summary"><strong id="voiceRating">—</strong><span><span class="stars-small">★★★★★</span><small>Out of 5 · <b id="voiceCount">0</b> responses</small></span></div>
+              <div class="feedback-quote" id="voiceQuote">No student comments yet.</div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view-panel" id="view-food-quality">
+          <div class="page-heading"><div><div class="eyebrow">INSPECTIONS <span class="demo-pill">DEMO DATA</span></div><h1>Food Quality</h1><p>Record a meal inspection and flag issues for corrective action.</p></div><button class="button button-primary" data-open-form="foodInspectionForm"><i data-lucide="plus"></i> New inspection</button></div>
+          <div class="metric-grid slim-metrics"><article class="metric-card"><div class="metric-top">Latest quality score</div><div class="metric-number"><strong id="foodScorePage">94</strong><span>%</span></div><div class="metric-foot">Target score: 90%</div></article><article class="metric-card"><div class="metric-top">Inspections this month</div><div class="metric-number"><strong id="foodInspectionCount">—</strong></div><div class="metric-foot">Database records</div></article><article class="metric-card"><div class="metric-top">Items needing attention</div><div class="metric-number"><strong class="text-coral" id="foodFlagCount">—</strong></div><div class="metric-foot">Open inspection findings</div></article></div>
+          <article class="panel form-panel"><div class="panel-heading"><div class="panel-title"><span class="panel-icon blue-icon"><i data-lucide="clipboard-list"></i></span><div><h2>New food quality inspection</h2><small>Each item is scored on the server and saved to the database.</small></div></div></div>
+            <form id="foodInspectionForm" class="inspection-form"><div class="form-top-grid"><label>Inspection date<input type="date" name="date" required></label><label>Meal type<select name="meal" required><option>Breakfast</option><option selected>Lunch</option><option>Snacks</option><option>Dinner</option></select></label><label>Inspector name<input name="inspector" placeholder="Your name" required></label></div><div id="foodCriteria" class="criteria-list"></div><label>Overall remarks<textarea name="remarks" rows="3" placeholder="Add notes or corrective actions..."></textarea></label><button class="button button-primary" type="submit"><i data-lucide="save"></i> Save inspection</button></form>
+          </article>
+          <article class="panel inspection-history-panel"><div class="panel-heading"><div class="panel-title"><span class="panel-icon blue-icon"><i data-lucide="history"></i></span><div><h2>Inspection history</h2><small>Latest saved food inspections</small></div></div></div><div id="foodInspectionHistory" class="table-scroll"></div></article>
+        </section>
+
+        <section class="view-panel" id="view-hygiene">
+          <div class="page-heading"><div><div class="eyebrow">INSPECTIONS <span class="demo-pill">DEMO DATA</span></div><h1>Hygiene Checklist</h1><p>Daily compliance checks help keep a safe, clean canteen.</p></div><button class="button button-primary" data-open-form="hygieneForm"><i data-lucide="plus"></i> Start checklist</button></div>
+          <article class="panel form-panel"><div class="panel-heading"><div class="panel-title"><span class="panel-icon green-icon"><i data-lucide="shield-check"></i></span><div><h2>Daily hygiene inspection</h2><small>Choose a status for each area and add remarks if needed.</small></div></div><span class="status-chip status-good" id="hygieneProgress">7 / 8 compliant</span></div>
+            <form id="hygieneForm" class="inspection-form"><div class="form-top-grid"><label>Inspection date<input type="date" name="date" required></label><label>Inspector name<input name="inspector" placeholder="Your name" required></label></div><div id="hygieneCriteria" class="criteria-list"></div><label>Inspection notes<textarea name="remarks" rows="3" placeholder="Add corrective actions or follow-up notes..."></textarea></label><button class="button button-primary" type="submit"><i data-lucide="save"></i> Save checklist</button></form>
+          </article>
+          <article class="panel inspection-history-panel"><div class="panel-heading"><div class="panel-title"><span class="panel-icon green-icon"><i data-lucide="history"></i></span><div><h2>Inspection history</h2><small>Latest saved hygiene checks</small></div></div></div><div id="hygieneInspectionHistory" class="table-scroll"></div></article>
+        </section>
+
+        <section class="view-panel" id="view-feedback">
+          <div class="page-heading"><div><div class="eyebrow">STUDENT VOICE <span class="demo-pill">DEMO DATA</span></div><h1>Student Feedback</h1><p>Feedback helps the team make visible, measurable improvements.</p></div><button class="button button-primary" id="feedbackFromDashboard"><i data-lucide="smartphone"></i> Preview student app</button></div>
+          <div class="metric-grid slim-metrics"><article class="metric-card"><div class="metric-top">Feedback received</div><div class="metric-number"><strong id="feedbackMetric">0</strong></div><div class="metric-foot">Saved responses</div></article><article class="metric-card"><div class="metric-top">Average rating</div><div class="metric-number"><strong id="feedbackAverage">—</strong><span>/ 5</span></div><div class="metric-foot"><span class="stars-small">★★★★★</span></div></article><article class="metric-card"><div class="metric-top">Response rate</div><div class="metric-number"><strong>—</strong></div><div class="metric-foot">Transaction data not connected</div></article></div>
+          <article class="panel"><div class="panel-heading"><div class="panel-title"><span class="panel-icon purple-icon"><i data-lucide="messages-square"></i></span><div><h2>Recent student feedback</h2><small>Names are hidden to protect student privacy.</small></div></div><select class="select-compact" id="feedbackMealFilter"><option value="all">All meals</option><option>Breakfast</option><option>Lunch</option><option>Snacks</option><option>Dinner</option></select></div><div class="feedback-list" id="feedbackList"></div></article>
+        </section>
+
+        <section class="view-panel" id="view-complaints">
+          <div class="page-heading"><div><div class="eyebrow">SERVICE RECOVERY <span class="demo-pill">DEMO DATA</span></div><h1>Complaints</h1><p>Track concerns, assign an owner, and record resolutions.</p></div><button class="button button-primary" id="newComplaint"><i data-lucide="plus"></i> Log complaint</button></div>
+          <div class="metric-grid slim-metrics"><article class="metric-card"><div class="metric-top">Open</div><div class="metric-number"><strong id="openComplaintMetric">0</strong></div><div class="metric-foot">Requires follow-up</div></article><article class="metric-card"><div class="metric-top">In progress</div><div class="metric-number"><strong id="inProgressComplaintMetric">0</strong></div><div class="metric-foot">Assigned to staff</div></article><article class="metric-card"><div class="metric-top">Resolved</div><div class="metric-number"><strong id="resolvedComplaintMetric">0</strong></div><div class="metric-foot">Complaints closed</div></article></div>
+          <article class="panel"><div class="panel-heading"><div class="panel-title"><span class="panel-icon coral-icon"><i data-lucide="list-filter"></i></span><div><h2>Complaint register</h2><small>Filter database complaints</small></div></div><div class="filter-row"><input class="select-compact" type="date" id="complaintDateStart" aria-label="Filter complaints from date"><input class="select-compact" type="date" id="complaintDateEnd" aria-label="Filter complaints through date"><select class="select-compact" id="categoryFilter"><option value="all">All categories</option><option>Taste</option><option>Freshness</option><option>Waiting time</option><option>Cleanliness</option><option>Portion size</option><option>Other</option><option>Staff behaviour</option></select><select class="select-compact" id="statusFilter"><option value="all">All statuses</option><option>Open</option><option>In Progress</option><option>Resolved</option></select><select class="select-compact" id="priorityFilter"><option value="all">All priorities</option><option>High</option><option>Medium</option><option>Low</option></select></div></div><div class="table-scroll"><table class="full-table"><thead><tr><th>Complaint ID</th><th>Date</th><th>Category</th><th>Description</th><th>Priority</th><th>Assigned to</th><th>Status</th><th>Action</th></tr></thead><tbody id="complaintTableRows"></tbody></table></div></article>
+        </section>
+
+        <section class="view-panel" id="view-analysis">
+          <div class="page-heading"><div><div class="eyebrow">TOTAL QUALITY MANAGEMENT <span class="demo-pill">DEMO DATA</span></div><h1>TQM Analysis</h1><p>Use quality tools to identify root causes and choose where to improve.</p></div></div>
+          <div class="analysis-grid"><article class="panel analysis-card"><div class="panel-heading"><div class="panel-title"><span class="panel-icon coral-icon"><i data-lucide="chart-no-axes-combined"></i></span><div><h2>Pareto analysis</h2><small>Focus on the vital few causes</small></div></div></div><p>Complaint counts are sorted from highest to lowest. Addressing the largest categories first can reduce the greatest share of student concerns.</p><div class="chart-canvas analysis-chart"><canvas id="paretoAnalysisChart"></canvas></div></article>
+            <article class="panel analysis-card"><div class="panel-heading"><div class="panel-title"><span class="panel-icon blue-icon"><i data-lucide="git-branch"></i></span><div><h2>Fishbone · root causes</h2><small>Analyze causes across five categories</small></div></div></div><p>Record possible causes before choosing a corrective action.</p><form id="fishboneForm" class="fishbone-form"><label>Problem<input name="problem" value="Inconsistent food quality" required></label><label>Category<select name="category"><option>People</option><option>Methods</option><option>Machines</option><option>Materials</option><option>Environment</option></select></label><label>Cause<input name="cause" placeholder="e.g. recipe steps vary by shift" required></label><button class="button button-outline" type="submit"><i data-lucide="plus"></i> Add cause</button></form><div class="fishbone-records" id="fishboneRecords"></div></article>
+            <article class="panel analysis-card"><div class="panel-heading"><div class="panel-title"><span class="panel-icon purple-icon"><i data-lucide="help-circle"></i></span><div><h2>5 Whys analysis</h2><small>Record a path to root cause</small></div></div></div><form id="whysForm" class="whys-form"><label>Problem statement<input name="problem" value="Lunch queue is too long" required></label><div id="whyFields"></div><button class="button button-outline" type="button" id="addWhy"><i data-lucide="plus"></i> Add why</button><button class="button button-primary" type="submit"><i data-lucide="save"></i> Save analysis</button></form><div id="savedWhys" class="saved-whys"></div></article>
+            <article class="panel analysis-card"><div class="panel-heading"><div class="panel-title"><span class="panel-icon green-icon"><i data-lucide="list-checks"></i></span><div><h2>Defect check sheet</h2><small>Recorded inspection issues</small></div></div></div><p>Recurring defects are summarized from saved food and hygiene inspections.</p><div class="checksheet" id="checkSheet"></div></article>
+            <article class="panel analysis-card"><div class="panel-heading"><div class="panel-title"><span class="panel-icon blue-icon"><i data-lucide="activity"></i></span><div><h2>Control chart</h2><small>Student rating · mean and three-sigma limits</small></div></div><select class="select-compact" id="controlMetric"><option value="overall_rating">Satisfaction</option><option value="food_quality">Food quality</option><option value="hygiene">Hygiene</option></select></div><p id="controlExplanation">Limits are calculated only when sufficient observations are available.</p><div class="chart-canvas analysis-chart"><canvas id="controlChart"></canvas></div></article></div>
+        </section>
+
+        <section class="view-panel" id="view-improvements">
+          <div class="page-heading"><div><div class="eyebrow">CONTINUOUS IMPROVEMENT <span class="demo-pill">DEMO DATA</span></div><h1>Improvement Plan</h1><p>Plan, test, check, and standardize improvements using the PDCA cycle.</p></div><button class="button button-primary" id="newPlan"><i data-lucide="plus"></i> New improvement plan</button></div>
+          <div class="improvement-grid" id="improvementPlans"></div>
+          <article class="panel"><div class="panel-heading"><div class="panel-title"><span class="panel-icon blue-icon"><i data-lucide="activity"></i></span><div><h2>Improvement outcomes</h2><small>Before and after measures · sample data</small></div></div></div><div class="outcomes"><div><small>Average service time</small><strong>10 <i data-lucide="arrow-right"></i> 6 min</strong><span class="positive">↓ 40% from baseline</span></div><div><small>Student satisfaction</small><strong>3.9 <i data-lucide="arrow-right"></i> 4.3 / 5</strong><span class="positive">↑ 0.4 points</span></div><div><small>Freshness-related complaints</small><strong>12 <i data-lucide="arrow-right"></i> 5</strong><span class="positive">↓ 58% from baseline</span></div></div></article>
+        </section>
+
+        <section class="view-panel" id="view-staff">
+          <div class="page-heading"><div><div class="eyebrow">TEAM INVOLVEMENT <span class="demo-pill">DEMO DATA</span></div><h1>Staff & Tasks</h1><p>Register employees, assign corrective actions, and track follow-through.</p></div></div>
+          <div class="staff-grid"><article class="panel form-panel"><div class="panel-heading"><div class="panel-title"><span class="panel-icon blue-icon"><i data-lucide="user-round-plus"></i></span><div><h2>Register staff member</h2><small>Staff records can be assigned inspections and tasks.</small></div></div></div><form id="staffForm" class="staff-form"><label>Name<input name="name" required maxlength="100"></label><label>Position<input name="position" value="Canteen staff" required maxlength="100"></label><button class="button button-primary" type="submit">Add staff member</button></form><div id="staffList" class="staff-list"></div></article>
+          <article class="panel form-panel"><div class="panel-heading"><div class="panel-title"><span class="panel-icon coral-icon"><i data-lucide="list-todo"></i></span><div><h2>Corrective-action tasks</h2><small>Set ownership and a due date.</small></div></div></div><form id="taskForm" class="staff-form"><label>Task<input name="title" required maxlength="200"></label><label>Description<textarea name="description" rows="2" maxlength="1000"></textarea></label><label>Assign to<select name="assigned_staff_id" id="taskStaffSelect"><option value="">Unassigned</option></select></label><label>Due date<input name="due_date" type="date"></label><button class="button button-primary" type="submit">Create task</button></form><div id="taskList" class="staff-list"></div></article>
+          <article class="panel form-panel" id="accountCard"><div class="panel-heading"><div class="panel-title"><span class="panel-icon purple-icon"><i data-lucide="key-round"></i></span><div><h2>Create a user account</h2><small>Admin-only account setup with a selected role.</small></div></div></div><form id="accountForm" class="staff-form"><label>Display name<input name="display_name" required maxlength="100"></label><label>Username<input name="username" required maxlength="80"></label><label>Temporary password<input name="password" type="password" minlength="8" required maxlength="200"></label><label>Role<select name="role"><option>Manager</option><option>Inspector</option><option>Student</option><option>Admin</option></select></label><button class="button button-primary" type="submit">Create account</button></form></article></div>
+        </section>
+
+        <section class="view-panel" id="view-reports">
+          <div class="page-heading"><div><div class="eyebrow">INSIGHTS & EXPORTS <span class="demo-pill">DEMO DATA</span></div><h1>Reports</h1><p>Choose a report and date range to preview or export saved records.</p></div><div class="filter-row"><input class="select-compact" type="date" id="reportStart" aria-label="Report start date"><input class="select-compact" type="date" id="reportEnd" aria-label="Report end date"></div></div>
+          <div class="reports-grid" id="reportsGrid"></div><div class="report-notice"><i data-lucide="info"></i><span>Reports include metric columns and the selected dates. Export is available as PDF or Excel.</span></div>
+        </section>
+
+        <section class="view-panel" id="view-settings">
+          <div class="page-heading"><div><div class="eyebrow">PREFERENCES</div><h1>Settings</h1><p>Preview the canteen profile and interface preferences.</p></div></div>
+          <article class="panel settings-panel"><div class="settings-row"><span class="settings-icon"><i data-lucide="store"></i></span><div><h2>Canteen profile</h2><p>Campus Canteen · North Campus</p></div><button class="button button-outline settings-edit">Edit profile</button></div><div class="settings-row"><span class="settings-icon"><i data-lucide="bell-ring"></i></span><div><h2>Notifications</h2><p>Get notified about new feedback and open complaints.</p></div><label class="toggle"><input type="checkbox" checked><span></span></label></div><div class="settings-row"><span class="settings-icon"><i data-lucide="database"></i></span><div><h2>Demo mode</h2><p>Sample records are shown; changes last only for this browser session.</p></div><span class="status-chip status-demo">Enabled</span></div></article>
+        </section>
+      </div>
+      <footer class="app-footer"><span>Smart Canteen TQM <b>·</b> Phase 1 interface prototype</span><span>Built for safer meals and happier students <i data-lucide="heart"></i></span></footer>
+    </main>
+  </div>
+
+  <main class="student-app" id="studentApp" hidden>
+    <header class="student-topbar"><button class="student-admin-link" id="backToAdmin"><i data-lucide="layout-dashboard"></i><span>Admin dashboard</span></button><div class="student-brand"><span class="student-logo"><i data-lucide="utensils"></i></span><div><strong>Campus Canteen</strong><small>North Campus</small></div></div><button class="icon-button" id="studentLogout" aria-label="Sign out"><i data-lucide="log-out"></i></button><button class="icon-button" aria-label="Notifications"><i data-lucide="bell"></i><span class="notification-dot"></span></button></header>
+    <nav class="student-tabs" aria-label="Student app navigation"><button class="student-tab active" data-student-view="home"><i data-lucide="house"></i>Home</button><button class="student-tab" data-student-view="menu"><i data-lucide="utensils"></i>Menu</button><button class="student-tab" data-student-view="feedback"><i data-lucide="star"></i>Feedback</button><button class="student-tab" data-student-view="complaint"><i data-lucide="message-square-warning"></i>Complaint</button><button class="student-tab" data-student-view="history"><i data-lucide="history"></i>History</button></nav>
+    <div class="student-content">
+      <section class="student-view active" id="student-home">
+        <div class="student-greeting"><div><span class="student-overline">TUESDAY, OCTOBER 20</span><h1>Good afternoon,<br><strong>there!</strong></h1><p>Good food. Better every day.</p></div><span class="sun-illustration"><i data-lucide="sun"></i></span></div>
+        <article class="student-card meal-card" id="todayMenuCard"><div class="card-kicker"><span class="live-dot"></span> TODAY'S LUNCH <span class="meal-time">12:00 – 2:30 PM</span></div><h2>Comfort food, made fresh.</h2><p>Paneer tikka bowl · Jeera rice · Fresh salad</p><div class="meal-tags"><span><i data-lucide="leaf"></i> Freshly prepared</span><span><i data-lucide="flame"></i> Veg special</span></div><button class="button button-white" data-student-go="menu">See today's menu <i data-lucide="arrow-right"></i></button></article>
+        <div class="student-section-title"><h2>How we're doing</h2><span>Updated today</span></div>
+        <div class="student-score-grid"><article class="student-score-card"><span class="score-icon quality-score"><i data-lucide="salad"></i></span><small>Food quality</small><strong><span id="studentFoodScore">92</span><span>%</span></strong><span class="score-caption"><i data-lucide="trending-up"></i> Great today</span></article><article class="student-score-card"><span class="score-icon hygiene-score"><i data-lucide="shield-check"></i></span><small>Kitchen hygiene</small><strong><span id="studentHygieneScore">88</span><span>%</span></strong><span class="score-caption"><i data-lucide="circle-check"></i> Checked today</span></article></div>
+        <article class="student-card rating-card"><div class="rating-top"><div><span class="student-overline">STUDENT RATING</span><h2>4.3 <small>/ 5</small></h2><div class="stars-small">★★★★★</div></div><div class="rating-bars"><span>Food <i><b style="width:88%"></b></i></span><span>Clean <i><b style="width:92%"></b></i></span><span>Speed <i><b style="width:76%"></b></i></span></div></div><p>Thanks for helping us get better, together.</p></article>
+        <article class="student-card complaint-status-card"><span class="complaint-status-icon"><i data-lucide="messages-square"></i></span><div><strong id="studentComplaintSummary">Your complaint status</strong><small id="studentComplaintDetail">Have a complaint ID? Check its progress.</small></div><button class="icon-button" data-student-go="complaint" aria-label="Track complaint"><i data-lucide="arrow-right"></i></button></article>
+        <button class="button button-primary student-quick-feedback" data-student-go="feedback"><i data-lucide="heart-handshake"></i> Share quick feedback</button>
+        <div class="student-section-title"><h2>Meal timings</h2></div><article class="student-card timings-card"><span><i data-lucide="sunrise"></i><b>Breakfast</b><small>7:30 – 10:00 AM</small></span><span><i data-lucide="sun"></i><b>Lunch</b><small>12:00 – 2:30 PM</small></span><span><i data-lucide="moon"></i><b>Dinner</b><small>7:00 – 9:00 PM</small></span></article>
+      </section>
+      <section class="student-view" id="student-menu"><div class="student-page-title"><span class="student-overline">FRESH FROM OUR KITCHEN</span><h1>Today's menu</h1><p>Prepared with care on campus.</p></div><div class="menu-day-tabs"><button class="active">Today</button><button>Tomorrow</button><button>Wednesday</button></div><div id="studentMenuRecords"><article class="student-card menu-section"><div class="menu-time"><i data-lucide="sunrise"></i><span><strong>Breakfast</strong><small>7:30 – 10:00 AM</small></span></div><div class="menu-dish"><span class="dish-emoji">🥣</span><div><strong>Masala oats & fresh fruit</strong><small>Whole grain · Vegetarian</small></div><span class="dish-price">₹45</span></div><div class="menu-dish"><span class="dish-emoji">🥪</span><div><strong>Veg grilled sandwich</strong><small>Fresh vegetables · Vegetarian</small></div><span class="dish-price">₹55</span></div></article><article class="student-card menu-section"><div class="menu-time"><i data-lucide="sun"></i><span><strong>Lunch</strong><small>12:00 – 2:30 PM</small></span></div><div class="menu-dish"><span class="dish-emoji">🍛</span><div><strong>Paneer tikka bowl</strong><small>Jeera rice · Salad · Vegetarian</small></div><span class="dish-price">₹90</span></div><div class="menu-dish"><span class="dish-emoji">🥘</span><div><strong>Dal tadka & rice</strong><small>Freshly prepared · Vegetarian</small></div><span class="dish-price">₹70</span></div></article><article class="student-card menu-section"><div class="menu-time"><i data-lucide="moon"></i><span><strong>Snacks</strong><small>3:30 – 5:30 PM</small></span></div><div class="menu-dish"><span class="dish-emoji">🥟</span><div><strong>Vegetable samosa</strong><small>Mint chutney · Vegetarian</small></div><span class="dish-price">₹25</span></div></article></div></section>
+      <section class="student-view" id="student-feedback"><div class="student-page-title"><span class="student-overline">YOUR VOICE MATTERS</span><h1>How was your meal?</h1><p>Your feedback helps make the canteen better for everyone.</p></div><form id="studentFeedbackForm" class="student-form"><article class="student-card rating-question"><label for="overallRating">Overall experience</label><div class="star-picker" data-rating="overall"><button type="button" aria-label="1 star" data-value="1">☆</button><button type="button" aria-label="2 stars" data-value="2">☆</button><button type="button" aria-label="3 stars" data-value="3">☆</button><button type="button" aria-label="4 stars" data-value="4">☆</button><button type="button" aria-label="5 stars" data-value="5">☆</button></div><small>Tap a star to rate your experience</small><input type="hidden" name="overallRating" id="overallRating" required></article><div class="student-card rating-rows"><div class="rating-row"><span class="rating-row-icon"><i data-lucide="salad"></i></span><span>Food quality</span><div class="mini-star-picker" data-rating="food"><button type="button" data-value="1">☆</button><button type="button" data-value="2">☆</button><button type="button" data-value="3">☆</button><button type="button" data-value="4">☆</button><button type="button" data-value="5">☆</button></div><small id="foodRatingText">—</small><input type="hidden" name="foodRating" required></div><div class="rating-row"><span class="rating-row-icon clean"><i data-lucide="sparkles"></i></span><span>Cleanliness</span><div class="mini-star-picker" data-rating="clean"><button type="button" data-value="1">☆</button><button type="button" data-value="2">☆</button><button type="button" data-value="3">☆</button><button type="button" data-value="4">☆</button><button type="button" data-value="5">☆</button></div><small id="cleanRatingText">—</small><input type="hidden" name="cleanRating" required></div><div class="rating-row"><span class="rating-row-icon speed"><i data-lucide="timer"></i></span><span>Service speed</span><div class="mini-star-picker" data-rating="speed"><button type="button" data-value="1">☆</button><button type="button" data-value="2">☆</button><button type="button" data-value="3">☆</button><button type="button" data-value="4">☆</button><button type="button" data-value="5">☆</button></div><small id="speedRatingText">—</small><input type="hidden" name="speedRating" required></div></div><article class="student-card form-fields"><label>Meal<select name="meal" required><option value="">Select your meal</option><option>Breakfast</option><option>Lunch</option><option>Snacks</option><option>Dinner</option></select></label><label>Comments <span>Optional</span><textarea name="comments" maxlength="200" rows="4" placeholder="Anything you'd like us to know?"></textarea></label><div class="privacy-note"><i data-lucide="lock-keyhole"></i> Your feedback is only used to improve our service.</div></article><button class="button button-primary student-submit" type="submit">Submit feedback <i data-lucide="arrow-right"></i></button></form></section>
+      <section class="student-view" id="student-complaint"><div class="student-page-title"><span class="student-overline">WE'RE HERE TO HELP</span><h1>Complaints</h1><p>Tell us what happened. We'll work to make it right.</p></div><div class="student-subtabs"><button class="active" data-complaint-tab="new">New complaint</button><button data-complaint-tab="track">Track a complaint</button></div><form id="studentComplaintForm" class="student-form student-complaint-form"><article class="student-card complaint-categories"><label>What is your complaint about?</label><div class="category-options"><label><input type="radio" name="category" value="Taste" required><span><i data-lucide="utensils"></i>Food taste</span></label><label><input type="radio" name="category" value="Cleanliness"><span><i data-lucide="sparkles"></i>Cleanliness</span></label><label><input type="radio" name="category" value="Waiting time"><span><i data-lucide="clock-3"></i>Waiting time</span></label><label><input type="radio" name="category" value="Portion size"><span><i data-lucide="soup"></i>Portion size</span></label><label><input type="radio" name="category" value="Staff behaviour"><span><i data-lucide="users"></i>Staff behaviour</span></label><label><input type="radio" name="category" value="Other"><span><i data-lucide="message-circle"></i>Other</span></label></div><label>Tell us a little more<textarea name="description" rows="4" required maxlength="300" placeholder="What would you like us to know?"></textarea></label><label>Meal<select name="meal" required><option value="">Select your meal</option><option>Breakfast</option><option>Lunch</option><option>Snacks</option><option>Dinner</option></select></label></article><button class="button button-primary student-submit" type="submit">Submit complaint <i data-lucide="arrow-right"></i></button></form><form id="trackComplaintForm" class="student-card track-form" hidden><span class="track-icon"><i data-lucide="search-check"></i></span><h2>Track your complaint</h2><p>Enter the ID we shared when you submitted your complaint.</p><label>Complaint ID<input name="complaintId" placeholder="e.g. SC-1042" required></label><button class="button button-primary" type="submit">Check status</button><div id="trackingResult"></div></form></section>
+      <section class="student-view" id="student-history"><div class="student-page-title"><span class="student-overline">YOUR RECENT ACTIVITY</span><h1>Feedback history</h1><p>See your recent feedback and complaint updates.</p></div><div id="studentHistoryList" class="history-list"></div></section>
+    </div>
+    <div class="toast-region" id="toastRegion" aria-live="polite"></div>
+  </main>
+  <div class="modal-backdrop" id="modalBackdrop" hidden><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><button class="modal-close" id="closeModal" aria-label="Close"><i data-lucide="x"></i></button><span class="modal-icon"><i data-lucide="info"></i></span><h2 id="modalTitle">Demo preview</h2><div id="modalContent"></div><button class="button button-primary" id="modalConfirm">Got it</button></section></div>
+  <div class="toast-region admin-toasts" id="adminToastRegion" aria-live="polite"></div>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

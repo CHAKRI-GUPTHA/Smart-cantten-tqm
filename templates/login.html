@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in · Smart Canteen</title>
+  <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body class="login-page">
+  <main class="login-card">
+    <a class="brand login-brand" href="/login"><span class="brand-mark">SC</span><span><strong>Smart Canteen</strong><small>QUALITY MONITORING</small></span></a>
+    <div class="eyebrow">WELCOME BACK</div>
+    <h1>Sign in to continue</h1>
+    <p class="login-intro">Use your canteen account to open the right workspace.</p>
+    <form id="loginForm">
+      <label>Username<input name="username" autocomplete="username" required></label>
+      <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+      <p class="login-error" id="loginError" role="alert"></p>
+      <button class="button button-primary" type="submit">Sign in</button>
+    </form>
+    <details class="demo-credentials"><summary>Demo accounts</summary>
+      <p>Admin: <code>admin / admin123</code></p>
+      <p>Manager: <code>manager / manager123</code></p>
+      <p>Inspector: <code>inspector / inspector123</code></p>
+      <p>Student: <code>student / student123</code></p>
+      <small>Local demo credentials only. Set a secret key and replace these accounts before deployment.</small>
+    </details>
+  </main>
+  <script>
+    const form = document.getElementById("loginForm");
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+      const data = new FormData(form);
+      const error = document.getElementById("loginError");
+      error.textContent = "";
+      try {
+        const response = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: data.get("username"), password: data.get("password") })
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Unable to sign in.");
+        location.href = result.user.role === "Student" ? "/student" : "/";
+      } catch (failure) {
+        error.textContent = failure.message || "Unable to connect to the server.";
+      }
+    });
+  </script>
+</body>
+</html>
