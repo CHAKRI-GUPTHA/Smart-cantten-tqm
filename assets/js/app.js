@@ -34,8 +34,13 @@
       headers: { ...(options.body ? { "Content-Type": "application/json" } : {}), ...(options.headers || {}) }
     });
     const contentType = response.headers.get("content-type") || "";
-    const result = contentType.includes("application/json") ? await response.json() : await response.blob();
-    if (!response.ok) throw new Error(result.error || "The request could not be completed.");
+    if (!contentType.includes("application/json")) {
+      throw new Error(
+        `The server returned HTTP ${response.status} instead of an API response. This app needs its Flask backend; GitHub Pages only serves static files and cannot handle sign-in or sign-out.`
+      );
+    }
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || `The request failed (HTTP ${response.status}).`);
     return result;
   }
   function asDateLabel(value) {

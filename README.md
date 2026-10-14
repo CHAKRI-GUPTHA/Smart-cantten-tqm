@@ -33,6 +33,14 @@ py -3 -m venv .venv
 
 Open **http://127.0.0.1:5000/login**. Keep the server running while using the application. The SQLite database is created automatically at `instance/canteen.sqlite3` on first startup.
 
+## Hosting and login troubleshooting
+
+Pushing this repository to GitHub stores the source code; it does not start the Flask server. **GitHub Pages cannot run this app's Python backend**, so API calls for `/api/auth/login`, `/api/auth/logout`, feedback, and other database operations fail there. The frontend and API use same-origin routes, so serving only `index.html` as a static website is not sufficient.
+
+To use the working login/logout and persistent features, run `python app.py` locally, or deploy the complete Flask project to a Python-capable web host. Configure the host to run `gunicorn app:app` (add `gunicorn` to `requirements.txt` if the selected host requires it), set a strong `CANTEEN_SECRET_KEY`, set `CANTEEN_HTTPS=1` behind HTTPS, and configure persistent storage for the SQLite database. Do not use an ephemeral filesystem for the database: it can be erased on restart/redeploy. Use the same deployed Flask origin for the pages and `/api` requests.
+
+For a non-demo deployment, set `CANTEEN_SEED_DEMO=0` and provision the first administrator as described below. Do not publish or use the local demo passwords on a public server.
+
 The first run seeds sample records and the local demo accounts below. Passwords are stored as Werkzeug password hashes, not plaintext:
 
 | Role | Username | Demo password |

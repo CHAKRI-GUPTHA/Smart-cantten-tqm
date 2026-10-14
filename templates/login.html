@@ -39,6 +39,12 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username: data.get("username"), password: data.get("password") })
         });
+        const contentType = response.headers.get("content-type") || "";
+        if (!contentType.includes("application/json")) {
+          throw new Error(
+            `The server returned HTTP ${response.status} instead of an API response. GitHub Pages cannot run the Flask login backend.`
+          );
+        }
         const result = await response.json();
         if (!response.ok) throw new Error(result.error || "Unable to sign in.");
         location.href = result.user.role === "Student" ? "/student" : "/";
