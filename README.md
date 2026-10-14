@@ -9,6 +9,7 @@ smart-canteen-tqm/
 ├── app.py                  # Flask routes, validation, role checks, reports
 ├── database.py             # SQLite connections and opt-in demo seed
 ├── create_admin.py         # Secure first-admin bootstrap for empty databases
+├── render.yaml             # Render web service with persistent SQLite storage
 ├── schema.sql              # Tables, constraints, and indexes
 ├── requirements.txt
 ├── index.html              # Manager and mobile student UI
@@ -40,6 +41,17 @@ Pushing this repository to GitHub stores the source code; it does not start the 
 To use the working login/logout and persistent features, run `python app.py` locally, or deploy the complete Flask project to a Python-capable web host. Configure the host to run `gunicorn app:app` (add `gunicorn` to `requirements.txt` if the selected host requires it), set a strong `CANTEEN_SECRET_KEY`, set `CANTEEN_HTTPS=1` behind HTTPS, and configure persistent storage for the SQLite database. Do not use an ephemeral filesystem for the database: it can be erased on restart/redeploy. Use the same deployed Flask origin for the pages and `/api` requests.
 
 For a non-demo deployment, set `CANTEEN_SEED_DEMO=0` and provision the first administrator as described below. Do not publish or use the local demo passwords on a public server.
+
+### Deploy the working application on Render
+
+The included `render.yaml` configures a Render Starter web service, Gunicorn, HTTPS cookies, a generated secret key, and a 1 GB persistent disk for SQLite. Render charges for paid web services and persistent disks; check the current pricing before creating the service.
+
+1. Sign in to [Render](https://dashboard.render.com) and choose **New + → Blueprint**.
+2. Connect `CHAKRI-GUPTHA/Smart-cantten-tqm` and deploy the Blueprint from the `main` branch. Review the paid service and disk before confirming.
+3. Wait for the first deploy to finish. In the service dashboard, open **Shell** and run `python create_admin.py`. Enter your chosen admin username, display name, and a strong password when prompted. The SQLite database is on the persistent disk mounted at `/opt/render/project/src/instance`.
+4. Open the service's `https://<your-service-name>.onrender.com/login` URL and sign in with the Admin account you created. The same URL is the public app link to share; GitHub Pages is not the app host.
+
+The health-check endpoint is `/healthz`. The Blueprint disables demo account seeding, so the public service will not contain the published local demo passwords. Keep the Render Shell credentials private. If the Admin account is lost, use the host shell to follow a controlled account recovery process rather than enabling demo seeding.
 
 The first run seeds sample records and the local demo accounts below. Passwords are stored as Werkzeug password hashes, not plaintext:
 

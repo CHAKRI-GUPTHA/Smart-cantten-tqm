@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: smart-canteen-tqm
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app
+    healthCheckPath: /healthz
+    disk:
+      name: canteen-data
+      mountPath: /opt/render/project/src/instance
+      sizeGB: 1
+    envVars:
+      - key: CANTEEN_DATABASE
+        value: /opt/render/project/src/instance/canteen.sqlite3
+      - key: CANTEEN_SEED_DEMO
+        value: "0"
+      - key: CANTEEN_HTTPS
+        value: "1"
+      - key: CANTEEN_SECRET_KEY
+        generateValue: true

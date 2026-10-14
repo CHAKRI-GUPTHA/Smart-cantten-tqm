@@ -125,6 +125,11 @@ class SmartCanteenApiTests(unittest.TestCase):
         self.assertEqual(invalid.status_code, 400)
         self.assertEqual(self.client.get("/api/dashboard").status_code, 403)
 
+    def test_deployment_health_endpoint(self):
+        response = self.client.get("/healthz")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json(), {"status": "ok"})
+
     def test_control_limits_require_twenty_observations(self):
         self.login("manager", "manager123")
         initial = self.client.get("/api/tqm/control-chart?metric=overall_rating").get_json()

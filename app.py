@@ -139,6 +139,11 @@ def assets(filename: str):
     return send_from_directory(BASE_DIR / "assets", filename)
 
 
+@app.get("/healthz")
+def health_check():
+    return jsonify(status="ok"), 200
+
+
 @app.get("/login")
 def login_page():
     return render_template("login.html")
